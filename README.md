@@ -32,3 +32,4 @@ Ensure you have [Conda](https://docs.conda.io/en/latest/) installed. To create t
 
 ```bash
 conda env create -f environment.yml
+conda activate ednn_env
