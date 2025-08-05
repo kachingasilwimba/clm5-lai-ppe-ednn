@@ -1,0 +1,41 @@
+# =============================================================================
+# Default configuration for data paths, bounds, and chunk sizes
+# =============================================================================
+file_paths:
+  grid_nc: "/bsuhome/ksilwimba/scratch/NCAR/Data/output_v4/PPEn11_transient_LHC0000.clm2.h0.2005-02-01-00000.nc"
+  met_nc:  "/bsuhome/ksilwimba/scratch/NCAR/Data/forcing_data/CLM5-PPE_met_forcing.nc"
+  ppe_csv: "/bsuhome/ksilwimba/scratch/NCAR/Data/helpers/lhc220926.txt"
+  lai_glob: "/bsuhome/ksilwimba/scratch/NCAR/Data/LAI/TLAI/*.nc"
+
+#---------- Geographic bounds for CONUS subset
+conus:
+  min_lon: 235    # minimum longitude
+  max_lon: 294    # maximum longitude
+  min_lat: 24.5   # minimum latitude
+  max_lat: 49.5   # maximum latitude
+
+#---------- Chunk sizes for xarray datasets
+chunk_sizes:
+  member:   10
+  time:     200
+  gridcell: 50
+# =============================================================================
+# configs/default.yaml
+# =============================================================================
+
+# file_paths:
+#   grid_nc: "/bsuhome/ksilwimba/scratch/NCAR/Data/output_v4/PPEn11_transient_LHC0000.clm2.h0.2005-02-01-00000.nc"
+#   met_nc:  "/bsuhome/ksilwimba/scratch/NCAR/Data/forcing_data/CLM5-PPE_met_forcing.nc"
+#   ppe_csv: "/bsuhome/ksilwimba/scratch/NCAR/Data/helpers/lhc220926.txt"
+#   lai_glob: "/bsuhome/ksilwimba/scratch/NCAR/Data/LAI/TLAI/*.nc"
+
+# conus:
+#   min_lon:   235
+#   max_lon:   294
+#   min_lat:   24.5
+#   max_lat:   49.5
+
+# chunk_sizes:
+#   member:    10
+#   time:      200
+#   gridcell:  50
