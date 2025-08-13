@@ -1,6 +1,6 @@
 # CLM5 LAI PPE EDNN Emulation
 
-This repository contains code for training an Evidential Deep Neural Network (EDNN) model for simulating Leaf Area Index (LAI) using perturbed parameter ensemble (PPE) data from the Community Land Model (CLM). In addition, the repository includes scripts for data augmentation, regridding, FAST sensitivity analysis, and visualization of uncertainty maps and scatter plots.
+This repository contains code for training an Evidential Deep Neural Network (EDNN) model for simulating Leaf Area Index (LAI) using perturbed parameter ensemble (PPE) data from the Community Land Model (CLM)  and the historical Global Soil Wetness Project Phase 3 (GSWP3) meteorological forcing. In addition, the repository includes scripts for data augmentation, regridding, FAST sensitivity analysis, and visualization of uncertainty maps and scatter plots for the paper "Efficient Emulation and Uncertainty Quantification of CLM5 Leaf Area Index Dynamics Using Evidential Deep Neural Networks".
 
 ---
 
