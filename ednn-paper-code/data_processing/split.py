@@ -14,12 +14,16 @@ Functions:
 # Imports
 #----------------
 import logging
-from typing import Tuple
+import os
+from typing import Tuple, Optional
+from pathlib import Path
+import joblib
 
 import numpy as np
 import xarray as xr
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import QuantileTransformer
+import joblib  # NEW: for persisting the fitted QuantileTransformer
 
 #----------------
 # Default Settings
@@ -46,6 +50,7 @@ def split_member_time(
     n_quantiles: int = DEFAULT_N_QUANTILES,
     output_distribution: str = DEFAULT_OUTPUT_DISTRIBUTION,
     subsample: int = DEFAULT_SUBSAMPLE,
+    save_scaler_path: Optional[str] = None,   # NEW: where to save fitted QT (e.g., "artifacts/qt_uniform.pkl")
 ) -> Tuple[
     xr.DataArray, xr.DataArray, xr.DataArray, xr.DataArray,
     np.ndarray, np.ndarray, np.ndarray, np.ndarray
@@ -64,6 +69,9 @@ def split_member_time(
         n_quantiles: Number of quantiles for QuantileTransformer.
         output_distribution: Desired distribution for transformed data.
         subsample: Maximum number of samples to use for quantile estimation.
+        save_scaler_path: Optional filesystem path to persist the fitted QuantileTransformer.
+            If provided, the transformer is saved after fitting and can be reloaded later
+            via `joblib.load(save_scaler_path)`.
 
     Returns:
         Tuple containing:
@@ -71,6 +79,8 @@ def split_member_time(
             - y_train_xr, y_val_xr: xarray DataArrays for targets.
             - X_train, X_val: numpy arrays of scaled features.
             - y_train, y_val: numpy arrays of targets.
+        (The fitted QuantileTransformer is NOT added to the return tuple to preserve
+         backwards compatibility; it is persisted to disk if `save_scaler_path` is set.)
     """
     logging.debug("Starting split_member_time")
 
@@ -136,9 +146,16 @@ def split_member_time(
         subsample=subsample,
         random_state=random_state
     )
-    X_train = qt.fit_transform(X_train)
+    X_train = qt.fit_transform(X_train)   # fit on TRAIN only
     X_val = qt.transform(X_val)
-    logging.info("Applied QuantileTransformer to feature arrays")
+
+    # --- persist the fitted transformer if a path is provided
+    if save_scaler_path:
+        p = Path(save_scaler_path).expanduser()
+        p.parent.mkdir(parents=True, exist_ok=True)   # create artifacts/ if missing
+        joblib.dump(qt, p)                            # writes immediately
+        logging.info("Saved QuantileTransformer to %s", p.resolve())
+
 
     #---------------- 7) Materialize target arrays
     y_train = y_train_xr.data.compute().astype(np.float32).reshape(-1, 1)
@@ -162,6 +179,5 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logging.info("Running split_member_time example for verification")
     # Example usage (requires X, y definitions):
-    # X, y = load_example_data()
-    # results = split_member_time(X, y)
-    # print(results)
+    # results = split_member_time(X, y, save_scaler_path="artifacts/qt_uniform.pkl")
+    # Later: qt = joblib.load("artifacts/qt_uniform.pkl"); X_new_scaled = qt.transform(X_new_np)

@@ -37,7 +37,7 @@ except FileNotFoundError:
     logging.error("Configuration file not found: %s", CONFIG_PATH)
     raise
 
-# Extract required configuration entries
+#---------------- Extract required configuration entries
 GRID_PATH = cfg.get("file_paths", {}).get("grid_nc")
 BOUNDS = cfg.get("conus")
 if not GRID_PATH:
@@ -61,7 +61,7 @@ def load_conus_gridcells() -> List[int]:
     logging.debug("Opening grid dataset at %s", GRID_PATH)
     ds = xr.open_dataset(GRID_PATH)
 
-    # Build DataFrame of cell coordinates
+    #---------------- Build DataFrame of cell coordinates
     logging.debug("Constructing DataFrame of gridcell coordinates")
     df = pd.DataFrame({
         "gridcell": ds["gridcell"].values,
@@ -69,7 +69,7 @@ def load_conus_gridcells() -> List[int]:
         "latitude": ds["grid1d_lat"].values,
     })
 
-    # Filter to CONUS bounds
+    #---------------- Filter to CONUS bounds
     query_str = (
         f"longitude >= {BOUNDS['min_lon']} and longitude <= {BOUNDS['max_lon']} and "
         f"latitude >= {BOUNDS['min_lat']} and latitude <= {BOUNDS['max_lat']}"
